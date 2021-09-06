@@ -1,0 +1,122 @@
+# Glossary
+
+-   **Algorithm**: a series of computer commands executed in a
+    specific order for a pre-defined purpose.
+    Algorithms process input data and produce outputs.
+    
+-   **Constraints** are variables used to estimate the number (or weight)
+    of individuals in each zone. Also referred to by the longer name of
+    **constraint variable**. We tend to use the term **linking variable**
+    in this book because they *link* aggregate and individual level datasets.
+
+-   **Combinatorial optimisation** is an approach to spatial
+    microsimulation that generates spatial microdata by randomly
+    selecting individuals from a survey dataset and measuring the fit
+    between the simulated output and the constraint variables. If the
+    fit improves after any particular change, the change is kept.
+    Williamson (2007) provides a practical user manual. @Harland2013
+    provides a practical demonstration of the method implemented in
+    the Java-based Flexible Modelling Framework (FMF).
+
+-   **Data frame**: a type of object (formally referred to as a class)
+    in R, data frames are square tables composed of rows and columns of
+    information. As with many things in R, the best way to understand
+    data frames is to create them and experiment. The following creates
+    a data frame with two variables: name and height:
+
+    Note that each new variable is entered using the command `c()` this is
+    how R creates objects with the *vector* data class, a one
+    dimensional matrix — and that text data must be entered in quote
+    marks.
+
+-   **Deterministic reweighting** is an approach to generating spatial
+    microdata that allocates fractional weights to individuals based on
+    how representative they are of the target area. It differs from
+    combinatorial optimisation approaches in that it requires no random
+    numbers. The most frequently used method of deterministic
+    reweighting is IPF.
+
+-   **For loops** are instructions that tell the computer to run a
+    certain set of command repeatedly. `for(i in 1:9) print(i)`, for
+    example will print the value of i 9 times. The best way to further
+    understand for loops is to try them out.
+
+-   **Iteration**: one instance of a process that is repeated many times
+    until a predefined end point, often within an *algorithm*.
+
+-   **Iterative proportional fitting** (IPF): an iterative process
+    implemented in mathematics and algorithms to find the maximum
+    likelihood of cells that are constrained by multiple sets of
+    marginal totals. To make this abstract definition even more
+    confusing, there are multiple terms which refer to the process,
+    including ‘biproportional fitting’ and ‘matrix raking’. In plain
+    English, IPF in the context of spatial microsimulation can be
+    defined as *a statistical technique for allocating weights to
+    individuals depending on how representative they are of different
+    zones*. IPF is a type of deterministic reweighting, meaning that
+    random numbers are not needed to generate the result and that the
+    output weights are real (not integer) numbers.
+    
+-   A **linking variable** is a variable that is shared between individual and 
+    aggregate level data. Common examples include age and sex (the linking variables
+    used in the SimpleWorld example): questions that are commonly asked in all
+    kinds of survey. Linking variables are also referred to as 
+    **constraint variables** because they *constrain* the weights for individuals
+    in each zone.
+    
+-   **Microdata** is the non-geographical individual level dataset from which
+    synthetic **spatial microdata** are usually derived. This sample of the
+    target population has also been labelled as the 'seed'
+    (e.g. Barthelemy and Toint, 2012) and simply the 'survey data' in the academic
+    literature. The term microdata is used in this book for its brevity and
+    semantic link to spatial microdata.
+    
+-   The **population base** roughly equivalent to the 'target population',
+    used by statisticians to describe the population about whom they wish to
+    draw conclusions based on a 'sample population'.
+    The sample population, is the group of individuals who
+    we have individual level data for.
+    In aggregate level data, the **population base** is the
+    complete set of individuals represented by the counts.
+    A common example is the variable "Hours worked":
+    only people aged 16 to 74 are generally thought of as working, so, if there is
+    no `NA` (no answer) category, the population base is not the same as the total
+    population of an area. A common problem faced by people using spatial microsimulation
+    methods is incompatibility between aggregate constraints that use different     
+    population bases.
+    
+-   **Population synthesis** is the process of converting input data (generally
+    non-geographical **microda** and geographically aggregated 
+    **constraint variables**) into **spatial microdata**.
+    
+-   **Spatial microdata** is the name given to individual level data allocated
+    to mutually exclusive geographical zones (see Figure 5.1 above). Spatial
+    microdata is useful because it provides multi level information, about the
+    relationships between individuals and where they live. However, due to the
+    high costs of large surveys and restrictions on the release of geocoded
+    individual level data, spatial microdata is rarely available to researchers.
+    To overcome this issue, most spatial microsimulation research employs methods
+    of **population synthesis** to generate representative spatial microdata.
+    
+-    **Spatial microsimulation** is the name given to an approach to modelling that
+    comprises a series of techniques that
+    generate, analyse and model individual level data allocated to small
+    administrative zones. Spatial microsimulation is an approach for
+    understanding processes that operate on individual and geographical levels.
+    
+-    A **weight matrix** is a 2 dimensional array that links non-spatial
+    *microdata* to geographical zones. Each row in the weight matrix represents
+    an individual and each column represents a zone. Thus, in R notation,
+    the weight matrix `w` has dimensions of `nrow(ind)` rows by `nrow(cons)`
+    where `ind` and `cons` are the microdata and constraints respectively.
+    The value of `w[i,j]` represents the extent to which individual `i` is
+    representative of zone `j`. `sum(w)` is the total population of the study area.
+    The weight matrix is an efficient way of storing spatial microdata because
+    it does not require a new row for every additional individual in the study
+    area. For a weight matrix to be converted into spatial microdata, all the
+    values of the wieghts must be integers. The conversion of an integer weight
+    matrix into an integer weight matrix is known as *integerisation*.
+
+```{r, echo=FALSE}
+# Any words that are highlighted in the main text can go in here
+```
