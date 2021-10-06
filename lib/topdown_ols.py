@@ -116,3 +116,32 @@ def workload_mtx_race():
 	for i in hist_idx:
 	    W[6, i] = 1
 	return W
+
+
+def workload_mtx_detail():
+	# setup parameters
+	n1, n2, n3, n4 = 8, 2, 2, 63        # number of attribute combinations: HHGQ (8) ∗ VOTINGAGE (2) ∗ HISPANIC (2) ∗ RACE (63)
+	N = n1 * n2 * n3 * n4         # number of attribute combinations: HHGQ (8) ∗ VOTINGAGE (2) ∗ HISPANIC (2) ∗ RACE (63)
+
+	W = np.zeros((N, N))
+	np.fill_diagonal(W, 1)
+	return W
+
+
+def workload_mtx_va_race():
+	# setup parameters
+	n1, n2, n3, n4 = 8, 2, 2, 63        # number of attribute combinations: HHGQ (8) ∗ VOTINGAGE (2) ∗ HISPANIC (2) ∗ RACE (63)
+	N = n1 * n2 * n3 * n4         # number of attribute combinations: HHGQ (8) ∗ VOTINGAGE (2) ∗ HISPANIC (2) ∗ RACE (63)
+
+	AA = torch.tensor(range(N))
+	AA = AA.reshape([n1, n2, n3, n4])
+
+	W = np.zeros((n2 * n4, N))
+	row_idx = 0
+	for x in range (n2):
+	    for y in range(n4):
+	        hist_idx = torch.flatten(AA[:, x, :, y]).tolist()
+	        for i in hist_idx:
+	            W[row_idx, i] = 1
+	        row_idx += 1
+	return W
