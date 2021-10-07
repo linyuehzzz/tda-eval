@@ -58,6 +58,7 @@ def query_race_va_dp(n2, n4, hist):
     hist.drop([col for col in hist.columns if len(col)==8], axis=1, inplace=True)
     return hist
 
+
 def query_race_ori(n4, hist):
 	### workload matrix for race using original detailed histogram
 	hist['BLK'] = hist['GEOID10'].astype(str)
@@ -223,3 +224,4 @@ def tpr_res_ols(rho, hist1, W):
 	tpr_ols_tr = p3 * p4 / sum(probs)
 
 	return tpr_ols_blk, tpr_ols_bg, tpr_ols_tr
+
