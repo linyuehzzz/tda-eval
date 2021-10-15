@@ -275,6 +275,40 @@ def reid_risk_ols(rho, hist1, W):
 	return ppv_ols_blk, ppv_ols_bg, ppv_ols_tr, tpr
 
 
+def recon_risk(hist1, hist2):
+	### calculate true positive rate [tp/(tp+fn)] with varying resolutions
+	## block
+	hist1_blk, hist2_blk = hist1, hist2
+	
+	p0 = np.nansum(pd.concat([hist1_blk, hist2_blk]).min(level=0).values)
+	p1 = np.nansum(pd.concat([hist1_blk, hist2_blk]).max(level=0).values)
+	rec_blk = p0 / p1
+
+	## block group
+	col_names = hist1.columns.to_numpy()
+	hist1_bg = hist1.groupby(hist1.index.astype(str).str[:12]).sum()
+	hist1_bg.index.name = 'BG'
+	hist2_bg = hist2.groupby(hist2.index.astype(str).str[:12]).sum()
+	hist2_bg.index.name = 'BG'
+	
+	p0 = np.nansum(pd.concat([hist1_bg, hist2_bg]).min(level=0).values)
+	p1 = np.nansum(pd.concat([hist1_bg, hist2_bg]).max(level=0).values)
+	rec_bg = p0 / p1
+	
+	## tract
+	col_names = hist1.columns.to_numpy()
+	hist1_tr = hist1.groupby(hist1.index.astype(str).str[:11]).sum()
+	hist1_tr.index.name = 'TRACT'
+	hist2_tr = hist2.groupby(hist2.index.astype(str).str[:11]).sum()
+	hist2_tr.index.name = 'TRACT'
+
+	p0 = np.nansum(pd.concat([hist1_tr, hist2_tr]).min(level=0).values)
+	p1 = np.nansum(pd.concat([hist1_tr, hist2_tr]).max(level=0).values)
+	rec_tr = p0 / p1
+	
+	return rec_blk, rec_bg, rec_tr
+	
+
 def acc_mae(hist1, hist2):
 	### calculate true positive rate [tp/(tp+fn)] with varying resolutions
 	## block
