@@ -103,18 +103,34 @@ def query_race_dp(n4, hist):
 	return hist
 
 
-def tpr_res(hist1, hist2):
+def reid_risk(hist1, hist2):
 	### calculate true positive rate [tp/(tp+fn)] with varying resolutions
 	## block
 	hist1_blk, hist2_blk = hist1, hist2
 	tu = (hist1_blk == hist2_blk) & (hist1_blk == 1) & (hist2_blk == 1) # find a true unique
 	if len(np.unique(tu.values, return_counts=True)[1]) == 2:  
 	    n_tu = np.unique(tu.values, return_counts=True)[1][1]
-	    u = hist2_blk == 1  # uniques after noise injection
-	    n_u = np.unique(u.values, return_counts=True)[1][1]
-	    tpr_blk = n_tu / n_u   # frequency of finding the true uniques
+	    u1 = hist1_blk == 1  # uniques after noise injection
+	    n_u1 = np.unique(u1.values, return_counts=True)[1][1]
+	    u2 = hist2_blk == 1  # uniques after noise injection
+	    n_u2 = np.unique(u2.values, return_counts=True)[1][1]
+	    ppv_blk = n_tu / n_u2   # precision
+	    tpr_blk = n_tu / n_u1   # recall
 	else:
+	    n_tu = 0
+	    u1 = hist1_blk == 1  # uniques after noise injection
+	    if len(np.unique(u1.values, return_counts=True)[1]) == 2:
+	    	n_u1 = np.unique(u1.values, return_counts=True)[1][1]
+	    else:
+	    	n_u1 = 0
+	    u2 = hist2_blk == 1  # uniques after noise injection
+	    if len(np.unique(u2.values, return_counts=True)[1]) == 2:
+	    	n_u2 = np.unique(u2.values, return_counts=True)[1][1]
+	    else:
+	    	n_u2 = 0
+	    ppv_blk = 0
 	    tpr_blk = 0
+	print(n_tu, n_u1, n_u2)
 
 	## block group
 	col_names = hist1.columns.to_numpy()
@@ -126,12 +142,28 @@ def tpr_res(hist1, hist2):
 	tu = (hist1_bg == hist2_bg) & (hist1_bg == 1) & (hist2_bg == 1) # find a true unique
 	if len(np.unique(tu.values, return_counts=True)[1]) == 2:  
 	    n_tu = np.unique(tu.values, return_counts=True)[1][1]
-	    u = hist2_bg == 1  # uniques after noise injection
-	    n_u = np.unique(u.values, return_counts=True)[1][1]
-	    tpr_bg = n_tu / n_u   # frequency of finding the true uniques
+	    u1 = hist1_bg == 1  # uniques after noise injection
+	    n_u1 = np.unique(u1.values, return_counts=True)[1][1]
+	    u2 = hist2_bg == 1  # uniques after noise injection
+	    n_u2 = np.unique(u2.values, return_counts=True)[1][1]
+	    ppv_bg = n_tu / n_u2   # precision
+	    tpr_bg = n_tu / n_u1   # recall
 	else:
+	    n_tu = 0
+	    u1 = hist1_bg == 1  # uniques after noise injection
+	    if len(np.unique(u1.values, return_counts=True)[1]) == 2:
+	    	n_u1 = np.unique(u1.values, return_counts=True)[1][1]
+	    else:
+	    	n_u1 = 0
+	    u2 = hist2_bg == 1  # uniques after noise injection
+	    if len(np.unique(u2.values, return_counts=True)[1]) == 2:
+	    	n_u2 = np.unique(u2.values, return_counts=True)[1][1]
+	    else:
+	    	n_u2 = 0
+	    ppv_bg = 0
 	    tpr_bg = 0
-
+	print(n_tu, n_u1, n_u2)
+	
 	## tract
 	col_names = hist1.columns.to_numpy()
 	hist1_tr = hist1.groupby(hist1.index.astype(str).str[:11]).sum()
@@ -142,16 +174,32 @@ def tpr_res(hist1, hist2):
 	tu = (hist1_tr == hist2_tr) & (hist1_tr == 1) & (hist2_tr == 1) # find a true unique
 	if len(np.unique(tu.values, return_counts=True)[1]) == 2:  
 	    n_tu = np.unique(tu.values, return_counts=True)[1][1]
-	    u = hist2_tr == 1  # uniques after noise injection
-	    n_u = np.unique(u.values, return_counts=True)[1][1]
-	    tpr_tr = n_tu / n_u   # frequency of finding the true uniques
+	    u1 = hist1_tr == 1  # uniques after noise injection
+	    n_u1 = np.unique(u1.values, return_counts=True)[1][1]
+	    u2 = hist2_tr == 1  # uniques after noise injection
+	    n_u2 = np.unique(u2.values, return_counts=True)[1][1]
+	    ppv_tr = n_tu / n_u2   # precision
+	    tpr_tr = n_tu / n_u1   # recall
 	else:
+	    n_tu = 0
+	    u1 = hist1_tr == 1  # uniques after noise injection
+	    if len(np.unique(u1.values, return_counts=True)[1]) == 2:
+	    	n_u1 = np.unique(u1.values, return_counts=True)[1][1]
+	    else:
+	    	n_u1 = 0
+	    u2 = hist2_tr == 1  # uniques after noise injection
+	    if len(np.unique(u2.values, return_counts=True)[1]) == 2:
+	    	n_u2 = np.unique(u2.values, return_counts=True)[1][1]
+	    else:
+	    	n_u2 = 0
+	    ppv_tr = 0
 	    tpr_tr = 0
+	print(n_tu, n_u1, n_u2)
+	
+	return ppv_blk, ppv_bg, ppv_tr, tpr_blk, tpr_bg, tpr_tr
 
-	return tpr_blk, tpr_bg, tpr_tr
 
-
-def tpr_res_ols(rho, hist1, W):
+def reid_risk_ols(rho, hist1, W):
 	### calculate true positive rate [tp/(tp+fn)] (for OLS estimators) with varying resolutions
 	## block
 	f1, f2, f3, f4, f6, f7, f8, f9, f10, f11 = 165/4099*5/4097, 165/4099*9/4097, 165/4099*5/4097, 165/4099*5/4097, 165/4099*5/4097, 165/4099*21/4097, 165/4099*21/4097, 165/4099*5/4097, 165/4099*71/4097, 165/4099*3945/4097
@@ -171,7 +219,7 @@ def tpr_res_ols(rho, hist1, W):
 	u0 = hist1 == 1
 	p4 = np.unique(u0.values, return_counts=True)[1][1] / (np.unique(u0.values, return_counts=True)[1][1] + 
 	                                                       np.unique(u0.values, return_counts=True)[1][0])
-	tpr_ols_blk = p3 * p4 / sum(probs)
+	ppv_ols_blk = p3 * p4 / sum(probs)
 
 	## block group
 	col_names = hist1.columns.to_numpy()
@@ -196,7 +244,7 @@ def tpr_res_ols(rho, hist1, W):
 	u0 = hist1_bg == 1
 	p4 = np.unique(u0.values, return_counts=True)[1][1] / (np.unique(u0.values, return_counts=True)[1][1] + 
 	                                                       np.unique(u0.values, return_counts=True)[1][0])
-	tpr_ols_bg = p3 * p4 / sum(probs)
+	ppv_ols_bg = p3 * p4 / sum(probs)
 
 	## tract
 	col_names = hist1.columns.to_numpy()
@@ -221,7 +269,37 @@ def tpr_res_ols(rho, hist1, W):
 	u0 = hist1_tr == 1
 	p4 = np.unique(u0.values, return_counts=True)[1][1] / (np.unique(u0.values, return_counts=True)[1][1] + 
 	                                                       np.unique(u0.values, return_counts=True)[1][0])
-	tpr_ols_tr = p3 * p4 / sum(probs)
+	ppv_ols_tr = p3 * p4 / sum(probs)
+	
+	tpr = scipy.stats.norm.cdf(0.5) - scipy.stats.norm.cdf(-0.5)
+	return ppv_ols_blk, ppv_ols_bg, ppv_ols_tr, tpr
 
-	return tpr_ols_blk, tpr_ols_bg, tpr_ols_tr
 
+def acc_mae(hist1, hist2):
+	### calculate true positive rate [tp/(tp+fn)] with varying resolutions
+	## block
+	hist1_blk, hist2_blk = hist1, hist2
+	noise_blk = abs(hist2_blk - hist1_blk)
+	mae_blk = noise_blk.values.mean()
+
+	## block group
+	col_names = hist1.columns.to_numpy()
+	hist1_bg = hist1.groupby(hist1.index.astype(str).str[:12]).sum()
+	hist1_bg.index.name = 'BG'
+	hist2_bg = hist2.groupby(hist2.index.astype(str).str[:12]).sum()
+	hist2_bg.index.name = 'BG'
+	
+	noise_bg = abs(hist2_bg - hist1_bg)
+	mae_bg = noise_bg.values.mean()
+	
+	## tract
+	col_names = hist1.columns.to_numpy()
+	hist1_tr = hist1.groupby(hist1.index.astype(str).str[:11]).sum()
+	hist1_tr.index.name = 'TRACT'
+	hist2_tr = hist2.groupby(hist2.index.astype(str).str[:11]).sum()
+	hist2_tr.index.name = 'TRACT'
+
+	noise_tr = abs(hist2_tr - hist1_tr)
+	mae_tr = noise_tr.values.mean()
+	
+	return mae_blk, mae_bg, mae_tr
