@@ -1,0 +1,75 @@
+---
+title: "Impact of algorithm parameters"
+author: "Yue Lin"
+date: "11/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Fit regression models to county-level risks
+
+```{r}
+library("readxl")
+data.all <- read_excel("reid_risk_con.xlsx", sheet = "all")
+data.ppv <- data.all[data.all$risk.type == 'ppv',]
+data.tpr <- data.all[data.all$risk.type == 'tpr',]
+```
+
+PPV as dependent variable
+```{r}
+attach(data.ppv)
+```
+
+```{r}
+library(plm)
+Y <- cbind(risk.value)
+# X <- cbind(plb, factor(qid), factor(aggregation.level), population, pct.white, pct.black, pct.indian, pct.asian, pct.hawaiian, pct.two.or.more, pct.hisp, pct.18.below, pct.18to64, pct.64.above, pct.housing.units)
+X <- cbind(plb, factor(aggregation.level), factor(qid))
+
+# Set data as panel data 
+pdata <- pdata.frame(data.ppv, index=c("county.id", "exp.id"))
+```
+
+```{r}
+# Pooled OLS estimator
+between <- plm(Y ~ X, data=pdata, model= "between")
+summary(between)
+# fixed <- plm(Y ~ X, data=pdata, model= "random", random.method = "walhus")
+# summary(fixed)
+```
+
+```{r}
+par(mfrow=c(1, 2))
+plot(fitted.values(fit.1), residuals(fit.1), pch=16, 
+     xlab="Predicted Value", ylab="Residual", main="")
+abline(h=0, lty=2)
+qqPlot(rstandard(fit.1))
+```
+
+
+```{r}
+library(car)
+fit.2 <- lm(sqrt(risk.value) ~ plb + factor(county) + factor(qid) + factor(aggregation.level), data=data.tpr)
+summary(fit.2)
+Anova(fit.2)
+AIC(fit.2)
+```
+
+```{r}
+par(mfrow=c(1, 2))
+plot(fitted.values(fit.2), residuals(fit.2), pch=16, 
+     xlab="Predicted Value", ylab="Residual", main="")
+abline(h=0, lty=2)
+qqPlot(rstandard(fit.2))
+```
+
+### Fit mixed-effect model to per-unit risks
+
+```{r}
+
+```
+
+
