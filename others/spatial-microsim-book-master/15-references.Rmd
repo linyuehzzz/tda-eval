@@ -1,8 +1,0 @@
-# Bibliography {#bibliography}
-
-```{r, echo=FALSE}
-# How to create: %s/\n/\r\r/gc in vim
-```
-
-
-
