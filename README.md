@@ -4,7 +4,7 @@ Geographically aggregated demographic, social, and economic data are valuable fo
 
 Citation
 --------
-Please cite the following reference if you use the code. We are also working on an article about this particular software😎.
+Please cite the following reference if you use the code.
 ```
 @article{lin2023assessing,
   title={Assessing the Impact of Differential Privacy on Population Uniques in Geographically Aggregated Data: The Case of the 2020 U.S. Census},
