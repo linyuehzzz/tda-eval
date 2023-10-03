@@ -4,18 +4,6 @@ library(dplyr)
 options(scipen=999)
 uni.data <- readr::read_csv("actual_uniques.csv")
 
-g <- ggplot(data = uni.data, aes(x=county, y=pct.uniques, fill=county)) +
-  geom_bar(stat = "identity", color = "grey40", width=0.5) + 
-  labs(y = "Percentage in Non-zeros (%)", x = "") +
-  scale_fill_grey(start = 0.7, end = 0.9) +
-  geom_text(aes(label=pct.uniques), position = position_dodge(0.9),
-            vjust = 1.2, color = "grey20", size=2.5) +
-  facet_grid(aggregation.level ~ query.type) +
-  theme_bw()
-g
-ggsave(g, file="pct_actual.eps", device="eps")
-
-
 #########
 library(scales)
 demo_continuous(c(1, 2, 3, 4), labels = label_math())
